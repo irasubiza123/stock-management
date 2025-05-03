@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Stock Management System</title>
+  <style>
+      * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            
+  
+            
+        }
+    
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+    
+        body.dark-mode {
+            background-color: #1e272e;
+            color: #f5f6fa;
+        }
+    
+        .login-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            width: 320px;
+        }
+    
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 22px;
+            color: #2c3e50;
+        }
+    
+        .form-group {
+            margin-bottom: 18px;
+        }
+    
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+    
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+    
+        .form-group input[type="submit"] {
+            background-color: #2980b9;
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+    
+        .form-group input[type="submit"]:hover {
+            background-color: #1f6391;
+        }
+    
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 10px;
+        }
+    
+        .sidebar {
+            width: 220px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            left: 0;
+            top: 0;
+        }
+    
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+    
+        .sidebar ul {
+            list-style: none;
+        }
+    
+        .sidebar ul li {
+            margin: 18px 0;
+        }
+    
+        .sidebar ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+    
+        .sidebar ul li a:hover {
+            color: #3498db;
+        }
+    
+        .main-content {
+            margin-left: 240px;
+            padding: 40px 30px;
+            width: 100%;
+        }
+    
+        .header {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+    
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+    
+        body.dark-mode .card,
+        body.dark-mode .header {
+            background: #34495e;
+            color: white;
+        }
+    
+        form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+    
+        input, select, button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    
+        button {
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+    
+        button.delete-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+    
+        button.update-btn {
+            background-color: #3498db;
+            color: white;
+        }
+    
+        button.delete-btn:hover {
+            background-color: #c0392b;
+        }
+    
+        button.update-btn:hover {
+            background-color: #2980b9;
+        }
+
+
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+    
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+    
+        .search-sort {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+    
+        ul#report-list {
+            margin-top: 10px;
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+    
+        .settings-option {
+            margin: 15px 0;
+        }
+    
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    .logout-btn {
+        background-color: #f39c12;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 6px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        float: right;
+    }
+    .logout-btn:hover {
+        background-color: #e67e22;
+    }
+    .hero-banner {
+  position: relative;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  
+}
+
+
+.hero-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 1s ease-in-out;
+}
+
+.banner-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  text-align: center;
+}
+
+.stats-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+.stat-card {
+    flex: 1;
+    background: #f1f2f6;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    text-align: center;
+    font-weight: bold;
+}
+body.dark-mode .stat-card {
+    background-color: #3b3b98;
+    color: white;
+}
+
+
+.stat-card span {
+    font-weight: normal;
+    color: #2c3e50;
+}
+.stat-card span#total-profit {
+    color: #27ae60;
+}
+.stat-card span#total-categories {
+    color: #e67e22;
+}
+.stat-card span#total-items {
+    color: #2980b9;
+}
+.stats-cards .stat-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+    .footer {
+        background: #2c3e50;
+        color: white;
+        padding: 15px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+    }
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM8d7x1z5l5a5l5a5l5a5l5a5l5a5l5a5l5a" crossorigin="anonymous" />
+
+  </style>
+</head>
+<body>
+
+<!-- Registration / Login -->
+<div class="login-container" id="login-container">
+  <h2>Stock Management System</h2>
+  <form id="loginForm" onsubmit="return validateLogin(event)">
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input type="text" id="username" required />
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" required />
+    </div>
+    <div class="form-group">
+      <input type="submit" value="Login" />
+    </div>
+    <div class="error-message" id="errorMessage"></div>
+    <p style="text-align:center;">Don't have an account? <a href="#" onclick="toggleRegister()">Register</a></p>
+  </form>
+
+  <!-- Register Form --> 
+  <form id="registerForm" style="display:none;" onsubmit="return registerUser(event)">
+    <div class="form-group">
+      <label for="reg-username">New Username:</label>
+      <input type="text" id="reg-username" required />
+    </div>
+    <div class="form-group">
+      <label for="reg-password">New Password:</label>
+      <input type="password" id="reg-password" required />
+    </div>
+    <div class="form-group">
+      <input type="submit" value="Register" />
+    </div>
+    <p style="text-align:center;">Already have an account? <a href="#" onclick="toggleRegister()">Login</a></p>
+  </form>
+</div>
+
+<!-- Dashboard -->
+<div class="main-content" id="dashboard-container" style="display: none;">
+  <div class="sidebar">
+    <h2>Dashboard</h2>
+    <ul>
+      <li><a href="#" onclick="showSection('home-section')">🏠 Home</a></li>
+
+      <li><a href="#" onclick="showSection('stock-section')">📦 Stock Items</a></li>
+      <li><a href="#" onclick="showSection('reports-section')">📊 Reports</a></li>
+      <li><a href="#" onclick="showSection('settings-section')">⚙️ Settings</a></li>
+      <li><a href="#" onclick="showSection('profile-section')">👤 Profile</a></li>
+
+    </ul>
+  </div>
+
+  <div class="header">
+    <h1>Stock Management System</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  
+<!-- Home Section -->
+<div class="hero-banner">
+  <img id="banner-image" src="images/pexels-baskincreativeco-1766838.jpg" alt="Banner Image" />
+  <img id="banner-image" src="images/wall.jpg" alt="Banner Image" />
+  <img id="banner-image" src="images/pexels-eberhardgross-640781.jpg" alt="Banner Image" />
+  <div class="banner-text">
+    <h2>Track Your Inventory Smartly</h2>
+    <p>Stay on top of your stock with real-time updates and easy tracking.</p>
+  </div>
+</div>
+
+<div class="stats-cards">
+  <div class="stat-card">📦 Total Items: <span id="total-items">0</span></div>
+  <div class="stat-card">📁 Categories: <span id="total-categories">0</span></div>
+  <div class="stat-card">💰 Total Profit: $<span id="total-profit">0.00</span></div>
+</div>
+<div id="greeting" style="font-size: 18px; margin-bottom: 15px;"></div>
+<div class="card section" id="home-section" style="display: none;">
+  <hr style="margin: 20px 0;"/>
+
+<!-- Summary Section -->
+<h3>📌 Quick Summary</h3>
+<ul id="home-summary" style="margin: 15px 0 25px 20px; line-height: 1.8;"></ul>
+
+<!-- Tips Section -->
+<h3>💡 Inventory Tips</h3>
+<ul style="margin: 10px 0 25px 20px; line-height: 1.8;">
+  <li>Review stock levels weekly to avoid overstocking.</li>
+  <li>Set minimum quantity alerts for critical items.</li>
+  <li>Label items clearly with categories and expiry dates.</li>
+  <li>Use the “Sell” button to track outgoing stock instantly.</li>
+</ul>
+
+<!-- Recent Activity -->
+<h3>📝 Recently Added Items</h3>
+<ul id="recent-activity" style="margin-left: 20px; line-height: 1.8;"></ul>
+
+  <h2>Welcome to the Stock Management System</h2>
+  <p>Use the sidebar to manage stock, view reports, and adjust settings.</p>
+  <p>This platform helps you track inventory, analyze profits, and organize your stock efficiently.</p>
+</div>
+
+
+<div id="greeting" style="font-size: 18px; margin-bottom: 15px;"></div>
+
+
+
+
+
+<script>
+  function updateGreeting() {
+    const now = new Date();
+    const hours = now.getHours();
+    let greeting = "Welcome";
+
+    if (hours < 12) greeting = "Good Morning";
+    else if (hours < 18) greeting = "Good Afternoon";
+    else greeting = "Good Evening";
+
+    document.getElementById("greeting").innerHTML = `${greeting}, User! <br> ${now.toLocaleTimeString()}`;
+  }
+
+  setInterval(updateGreeting, 1000);
+  updateGreeting();
+
+ 
+</script>
+
+
+
+
+
+  <!-- Stock Section -->
+
+  <div class="card section" id="stock-section">
+    <form id="stock-form">
+      <input type="text" id="item-name" placeholder="Item Name" required />
+      <input type="number" id="item-quantity" placeholder="Quantity" required />
+      <input type="number" id="cost-price" placeholder="Cost Price" required />
+      <input type="number" id="selling-price" placeholder="Selling Price" required />
+      <input type="date" id="item-expiry" placeholder="Expiry Date (optional)" />
+      <select id="item-category" required>
+        <option value="">Select Category</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Food">Food</option>
+        <option value="Office Supplies">Office Supplies</option>
+      </select>
+      <button type="submit">Add Item</button>
+    </form>
+
+    <div class="search-sort">
+      <input type="text" id="search-bar" placeholder="Search item..." />
+      <select id="sort-option">
+        <option value="">Sort By</option>
+        <option value="name">Name</option>
+        <option value="quantity">Quantity</option>
+      </select>
+      <button onclick="exportCSV()">Export to CSV</button>
+    </div>
+
+    <table id="stock-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Qty</th>
+          <th>Cost</th>
+          <th>Sell</th>
+          <th>Profit</th>
+          <th>Category</th>
+          <th>Added</th>
+          <th>Expires</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Reports -->
+  <div class="card section" id="reports-section" style="display: none;">
+    <h2>Stock Summary Report</h2>
+    <ul id="report-list"></ul>
+  </div>
+
+  <!-- Settings -->
+  <div class="card section" id="settings-section" style="display: none;">
+    <h2>Settings</h2>
+    <div class="settings-option">
+      <label><input type="checkbox" id="dark-mode-toggle" /> Enable Dark Mode</label>
+    </div>
+    <div class="settings-option">
+      <button onclick="clearAllStock()">🔁 Clear All Stock Items</button>
+    </div>
+  </div>
+</div>
+<div class="card section" id="profile-section" style="display: none;">
+  <h2>User Profile</h2>
+  <form id="profile-form">
+    <div class="form-group">
+      <label for="profile-username">Username:</label>
+      <input type="text" id="profile-username" readonly />
+    </div>
+    <div class="form-group">
+      <label for="profile-email">Email:</label>
+      <input type="email" id="profile-email" placeholder="Your email" />
+    </div>
+    <div class="form-group">
+      <label for="profile-password">New Password:</label>
+      <input type="password" id="profile-password" placeholder="Leave blank to keep current" />
+    </div>
+    <div class="form-group">
+      <button type="button" onclick="updateProfile()">Update Profile</button>
+    </div>
+  </form>
+</div>
+
+
+
+<!-- Footer -->
+<div class="footer" style="text-align: center; margin-top: 20px; padding: 10px; background: #2c3e50; color: white; position: fixed; width: 100%; bottom: 0;">
+  <p>&copy; 2025 Stock Management System. All rights reserved.</p>
+   
+</div>
+
+
+
+
+
+
+<script>
+  // AUTHENTICATION
+function registerUser(e) {
+  e.preventDefault();
+  const username = document.getElementById("reg-username").value;
+  const password = document.getElementById("reg-password").value;
+
+  fetch("register.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("User registered!");
+        toggleRegister();
+      } else {
+        alert(data.message);
+      }
+    });
+}
+
+function validateLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  fetch("login.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        sessionStorage.setItem("user", username);
+        showDashboard();
+      } else {
+        document.getElementById("errorMessage").textContent = "Invalid credentials.";
+      }
+    });
+}
+
+
+  function toggleRegister() {
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    loginForm.style.display = loginForm.style.display === "none" ? "block" : "none";
+    registerForm.style.display = registerForm.style.display === "block" ? "none" : "block";
+  }
+
+  function logout() {
+    sessionStorage.removeItem("user");
+    location.reload();
+  }
+
+  function showDashboard() {
+    document.getElementById("login-container").style.display = "none";
+    document.getElementById("dashboard-container").style.display = "block";
+    renderTable();
+  }
+
+  if (sessionStorage.getItem("user")) showDashboard();
+
+  // STOCK LOGIC
+  let stockItems = JSON.parse(localStorage.getItem("stockItems")) || [];
+  let totalProfit = parseFloat(localStorage.getItem("totalProfit")) || 0;
+
+  document.getElementById("stock-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  addStockItem();
+  document.getElementById("category").value;
+document.getElementById("expiry-date").value;
+document.getElementById("added-date").value;
+
+});
+function addStockItem() {
+  const name = document.getElementById("item-name").value;
+  const quantity = parseInt(document.getElementById("item-quantity").value);
+  const costPrice = parseFloat(document.getElementById("cost-price").value);
+  const sellingPrice = parseFloat(document.getElementById("selling-price").value);
+  const category = document.getElementById("item-category").value;
+  const expiryDate = document.getElementById("item-expiry").value || "N/A";
+  const addedDate = new Date().toLocaleDateString();
+
+  const item = {
+    name,
+    quantity,
+    costPrice,
+    sellingPrice,
+    category,
+    expiryDate,
+    addedDate
+  };
+
+  fetch("add_item.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(item)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      // ✅ Add to local array
+      stockItems.push(item);
+      saveToStorage();  // ✅ Save to Local Storage
+
+      alert("Stock item added successfully!");
+      document.getElementById("stock-form").reset();
+      renderTable();
+    } else {
+      alert("Failed to add item: " + data.message);
+    }
+  });
+}
+
+
+
+
+
+
+
+
+function renderTable() {
+  const tbody = document.querySelector('#stock-table tbody');
+  tbody.innerHTML = '';
+  const searchText = document.getElementById('search-bar').value.toLowerCase();
+  let items = [...stockItems].filter(i => i.name.toLowerCase().includes(searchText));
+  document.getElementById("total-items").textContent = stockItems.length;
+document.getElementById("total-categories").textContent = new Set(stockItems.map(i => i.category)).size;
+document.getElementById("total-profit").textContent = totalProfit.toFixed(2);
+
+
+
+  if (document.getElementById("sort-option").value === "name") {
+    items.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (document.getElementById("sort-option").value === "quantity") {
+    items.sort((a, b) => b.quantity - a.quantity);
+  }
+
+  items.forEach((item, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.quantity}</td>
+      <td>${item.costPrice}</td>
+      <td>${item.sellingPrice}</td>
+      <td>${(item.sellingPrice - item.costPrice).toFixed(2)}</td>
+      <td>${item.category}</td>
+      <td>${item.addedDate}</td>
+      <td>${item.expiryDate}</td>
+      <td>
+        <button class="update-btn" onclick="updateItem(${i})">Update</button>
+        <button class="delete-btn" onclick="deleteItem(${i})">Delete</button>
+        <button class="sell-btn" onclick="sellItem(${i})">Sell</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+  renderReport();
+}
+
+
+  function updateItem(i) {
+    const newQty = prompt("Enter new quantity:", stockItems[i].quantity);
+    if (newQty !== null && !isNaN(newQty)) {
+      stockItems[i].quantity = parseInt(newQty);
+      saveToStorage();
+      renderTable();
+    }
+  }
+
+  function deleteItem(i) {
+    if (confirm("Are you sure?")) {
+      stockItems.splice(i, 1);
+      saveToStorage();
+      renderTable();
+    }
+  }
+
+  function sellItem(i) {
+    const qty = parseInt(prompt("Quantity to sell:", 1));
+    if (!isNaN(qty) && qty > 0 && qty <= stockItems[i].quantity) {
+      stockItems[i].quantity -= qty;
+      totalProfit += (stockItems[i].price - stockItems[i].cost) * qty;
+      saveToStorage();
+      renderTable();
+    }
+  }
+
+  function saveToStorage() {
+    localStorage.setItem("stockItems", JSON.stringify(stockItems));
+    localStorage.setItem("totalProfit", totalProfit.toFixed(2));
+  }
+
+  function renderReport() {
+    const list = document.getElementById("report-list");
+    if (!stockItems.length) {
+      list.innerHTML = "<li>No stock data available.</li>";
+      return;
+    }
+    let totalQty = 0;
+    let lowStock = [];
+    stockItems.forEach(item => {
+      totalQty += item.quantity;
+      if (item.quantity < 5) lowStock.push(item.name);
+    });
+
+    list.innerHTML = `
+      <li><strong>Total Items:</strong> ${stockItems.length}</li>
+      <li><strong>Total Quantity:</strong> ${totalQty}</li>
+      <li><strong>Total Profit:</strong> $${totalProfit.toFixed(2)}</li>
+      ${lowStock.length ? `<li><strong>Low Stock:</strong> ${lowStock.join(', ')}</li>` : ''}
+    `;
+  }
+
+  function exportCSV() {
+    const header = ['Name','Quantity','Cost','Sell','Category','Added','Expiry'];
+    const rows = stockItems.map(i => [i.name, i.quantity, i.cost, i.price, i.category, i.added, i.expiry]);
+    let csv = 'data:text/csv;charset=utf-8,' + header.join(',') + '\n';
+    rows.forEach(row => { csv += row.join(',') + '\n'; });
+
+    const encoded = encodeURI(csv);
+    const link = document.createElement("a");
+    link.setAttribute("href", encoded);
+    link.setAttribute("download", "stock_data.csv");
+    link.click();
+  }
+
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+  }
+
+  function clearAllStock() {
+    if (confirm("This will remove all items and reset profit.")) {
+      stockItems = [];
+      totalProfit = 0;
+      saveToStorage();
+      renderTable();
+    }
+  }
+
+  document.getElementById("dark-mode-toggle").addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode");
+  });
+
+  document.getElementById("search-bar").addEventListener("input", renderTable);
+  document.getElementById("sort-option").addEventListener("change", renderTable);
+  function updateHomeSummary() {
+  // Summary Stats
+  const totalItems = stockItems.length;
+  const lowStock = stockItems.filter(i => i.quantity < 5).length;
+  const summaryList = document.getElementById("home-summary");
+  summaryList.innerHTML = `
+    <li><strong>Total Items:</strong> ${totalItems}</li>
+    <li><strong>Items Low in Stock:</strong> ${lowStock}</li>
+    <li><strong>Total Profit:</strong> $${parseFloat(totalProfit).toFixed(2)}</li>
+  `;
+
+  // Recent Activity
+  const recent = [...stockItems].slice(-5).reverse(); // last 5
+  const recentList = document.getElementById("recent-activity");
+  recentList.innerHTML = recent.length ? recent.map(item => `
+    <li>${item.name} (${item.quantity} pcs) - Added on ${item.addedDate}</li>
+  `).join('') : "<li>No recent activity.</li>";
+}
+
+const images = ["images/pexels-baskincreativeco-1766838.jpg", "images/wall.jpg", "images/pexels-eberhardgross-640781.jpg"]; // Add your image paths
+let currentIndex = 0;
+
+function changeBannerImage() {
+  currentIndex = (currentIndex + 1) % images.length;
+  document.getElementById("banner-image").src = images[currentIndex];
+}
+
+setInterval(changeBannerImage, 4000); // Change every 4 seconds
+
+
+  function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll(".section").forEach(section => {
+      section.style.display = "none";
+    });
+
+    // Show the selected section
+    const selectedSection = document.getElementById(sectionId);
+    if (selectedSection) {
+      selectedSection.style.display = "block";
+    }
+
+    // Load profile data if the profile section is selected
+    if (sectionId === "profile-section") {
+      loadProfile();
+    }
+  }
+
+  function loadProfile() {
+    const username = sessionStorage.getItem("user");
+    document.getElementById("profile-username").value = username || "Guest";
+
+    // Placeholder: Load email from backend if implemented
+    document.getElementById("profile-email").value = "user@example.com"; // Example email
+  }
+
+  
+
+
+</script>
+</body>
+</html>
